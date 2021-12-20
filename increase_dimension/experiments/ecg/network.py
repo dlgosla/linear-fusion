@@ -72,17 +72,12 @@ class Multimodal_Transformer(nn.Module):
         
         
     def forward(self, input_s, input_f, input_sf): #[bs,50,1] , [bs,50,1,1]
-        li_s = self.linear1(input1)#[bs,50,64]        
-        li_s = self.linear2(li_s)#[bs,50,128]
 
-        li_f = self.linear3(input2)#[bs,50,64]        
-        li_f = self.linear4(li_f)#[bs,50,128]
-
-        li = torch.cat([li_s, li_f], dim=2) #[bs,50,256]
-        tf = self.pos_encoder(li.permute(0,2,1))# [bs,256,50]
-
+        input_s = input_s.permute(2,0,1)
+        input_f = input_f.permute(2,0,1)
+        input_sf = input_sf.permute(2,0,1)
         
-        tf = self.transformer_encoder(tf)
+        tf = self.transformer_encoder(input_sf)
         #tf = self.transformer_encoder1(src_Q=input_sf, src_K=input_sf, src_V=input_sf) #output = V
         #tf = self.transformer_encoder2(src_Q=input_s, src_K=tf, src_V=tf)
         #tf = self.transformer_encoder3(src_Q=input_s, src_K=tf, src_V=tf)
